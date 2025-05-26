@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Project Allocation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #444;
+    }
+
+    body {
+      background: url('https://i.pinimg.com/736x/33/9c/76/339c762c2f72885d2e5ab7c6be772ec9.jpg') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.55); /* dark overlay for readability */
+      z-index: 0;
+    }
+
+    /* Container */
+    .login-container {
+      position: relative;
+      background:lavender; 
+      padding: 40px 35px;
+      border-radius: 12px;
+      width: 360px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      z-index: 1;
+      transition: box-shadow 0.3s ease;
+    }
+    .login-container:hover {
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Heading */
+    h1 {
+      margin-bottom: 25px;
+      font-weight: 700;
+      color: #222;
+      letter-spacing: 1.3px;
+    }
+
+    /* Labels */
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #555;
+      text-align: left;
+    }
+
+    /* Inputs & Select */
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      border: 1.8px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+      outline: none;
+    }
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+    }
+
+    /* Button */
+    button {
+      width: 100%;
+      padding: 13px 0;
+      background-color: #007bff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 6px 14px rgba(0, 123, 255, 0.35);
+    }
+    button:hover {
+      background-color: #0056b3;
+      box-shadow: 0 8px 22px rgba(0, 86, 179, 0.45);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <label for="email">Email ID</label>
+      <input type="email" id="email" placeholder="Enter your email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" required />
+
+      <label for="role">Select Role</label>
+      <select id="role" required>
+        <option value="" disabled selected>Select role</option>
+        <option value="employee">Employee</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const role = document.getElementById("role").value;
+      if (!role) {
+        alert("Please select a role.");
+        return;
+      }
+      const data = {
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value
+      };
+
+      try {
+        const response = await fetch("http://localhost:5000/userlogin", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+if (result.access_token) {
+  sessionStorage.setItem("access_token", result.access_token);
+  sessionStorage.setItem("email", result.email);
+  sessionStorage.setItem("user_id", result.user_id); // Store user_id
+  alert("Login successful");
+
+  if (role === "employee") {
+    window.location.href = "employee.html";
+  } else {
+    window.location.href = "admin.html";
+  }
+}
+ else {
+          alert("Login failed: " + (result.message || "Invalid credentials"));
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+      }
+    });
+  </script>
+
+</body>
+</html>

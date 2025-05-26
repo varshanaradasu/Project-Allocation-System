@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f8;
+    }
+
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+    <button onclick="logout()" style="float: right; background-color: red; color: white; border: none; padding: 8px 12px; margin-right: 20px; border-radius: 5px; cursor: pointer;">
+    Logout
+  </button>
+  <header>Employee Dashboard</header>
+  <div class="container">
+    
+    <div class="section">
+      <h2>Allocated Project</h2>
+      <p id="projectInfo">Loading...</p>
+    </div>
+
+    <div class="section">
+      <h2>Update Project Status</h2>
+      <label for="status">Select Status</label>
+      <select id="status">
+        <option value="">Select</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Completed">Completed</option>
+        <option value="Not Started">Not Started</option>
+      </select>
+      <button onclick="submitStatus()">Submit Status</button>
+      
+    </div>
+
+  </div>
+
+  <script>
+    const userEmail = sessionStorage.getItem("email");
+
+    async function fetchUserId() {
+      const response = await fetch("http://localhost:5000/viewemployees");
+      const employees = await response.json();
+      const user = employees.find(emp => emp.email === userEmail);
+      return user ? user.user_id : null;
+    }
+
+    async function loadAllocation() {
+      const user_id = await fetchUserId();
+      if (!user_id) {
+        alert("User not found.");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:5000/getallocation/${user_id}`);
+      const data = await response.json();
+
+      if (data.proj_id) {
+        document.getElementById("projectInfo").innerText = `Project ID: ${data.proj_id} - ${data.project_title}`;
+        sessionStorage.setItem("user_id", user_id);
+        sessionStorage.setItem("proj_id", data.proj_id);
+      } else {
+        document.getElementById("projectInfo").innerText = "No project allocated.";
+      }
+
+      loadStatusTable();
+    }
+
+    async function submitStatus() {
+      const user_id = sessionStorage.getItem("user_id");
+      const proj_id = sessionStorage.getItem("proj_id");
+      const status = document.getElementById("status").value;
+
+      if (!status) {
+        alert("Please select a status.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:5000/updatestatus", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id, proj_id, status })
+      });
+
+      const result = await response.json();
+      alert(result.message);
+      loadStatusTable();
+    }
+
+    async function loadStatusTable() {
+      const response = await fetch("http://localhost:5000/viewstatuses");
+      const statuses = await response.json();
+      const user_id = sessionStorage.getItem("user_id");
+
+      const tableBody = document.querySelector("#statusTable tbody");
+      tableBody.innerHTML = "";
+
+      statuses
+        .filter(row => row.employee_name && row.id && row.status && row.status !== "" && row.status !== null)
+        .filter(row => row.id && row.user_id === parseInt(user_id))
+        .forEach(row => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${row.project_title}</td>
+            <td>${row.status}</td>
+            <td>${new Date(row.updated_at).toLocaleString()}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+    }
+      function logout() {
+    // Clear sessionStorage
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = "login.html";  // Change to your actual login page
+  }
+
+    window.onload = loadAllocation;
+  </script>
+</body>
+</html>

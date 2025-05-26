@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Allocations</title>
+</head>
+<body>
+  <h2>Project Allocations</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Allocation ID</th>
+        <th>Project Title</th>
+        <th>Employee Name</th>
+        <th>Allocated At</th>
+      </tr>
+    </thead>
+    <tbody id="allocationsTable"></tbody>
+  </table>
+
+  <script>
+    fetch('http://localhost:5000/viewallocation')  // corrected route
+      .then(res => res.json())
+      .then(data => {
+        const table = document.getElementById('allocationsTable');
+        table.innerHTML = '';
+        data.forEach(row => {
+          table.innerHTML += `
+            <tr>
+              <td>${row.allocation_id}</td>
+              <td>${row.project_name}</td>
+              <td>${row.employee_name}</td>
+              <td>${row.allocated_at}</td>
+            </tr>`;
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching allocation data:', err);
+        alert('Failed to load allocations.');
+      });
+  </script>
+</body>
+</html>

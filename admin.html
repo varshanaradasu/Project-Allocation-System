@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard - Project Allocation</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+    }
+
+    .main-container {
+      display: grid;
+      grid-template-rows: 20% 80%;
+      height: 100vh;
+    }
+
+    .top-row {
+      background-color: #f4f6f8;
+      padding: 20px 0;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .left-column, .right-column {
+      padding: 20px;
+    }
+
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .dashboard-header h1 {
+      margin: 0;
+      font-size: 32px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .nav-links {
+      margin-top: 10px;
+      display: inline-flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-links a {
+      background-color: #007bff;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background-color: #0056b3;
+    }
+
+    .auto-allocate-container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .auto-allocate-container button {
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-container">
+    <div class="top-row">
+      <div class="dashboard-header">
+        <h1>Admin Dashboard</h1>
+        <div class="nav-links">
+          <a href="viewemployees.html">View Employees</a>
+          <a href="viewprojects.html">View Projects</a>
+          <a href="viewallocations.html">View Allocations</a>
+          <a href="exportallocations.html">Export Allocations</a>
+          <a href="viewstatuses.html">View Project Statuses</a>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-row">
+      <!-- Left: Add User -->
+      <div class="left-column">
+        <form id="addUserForm">
+          <h2>Add User</h2>
+          <input placeholder="Name" id="name" required />
+          <input placeholder="Email" id="email" type="email" required />
+          <input placeholder="Password" id="password" type="password" required />
+          <select id="role" required>
+            <option value="">Select Role</option>
+            <option value="employee">Employee</option>
+            <option value="admin">Admin</option>
+          </select>
+          <input placeholder="Skills (if employee)" id="skills" />
+          <input placeholder="Skill Rating (1-10)" id="skill_rating" type="number" min="1" max="10" />
+          <button type="submit">Add User</button>
+        </form>
+      </div>
+
+      <!-- Right: Add Project -->
+      <div class="right-column">
+        <form id="addProjectForm">
+          <h2>Add Project</h2>
+          <input placeholder="Project Title" id="proj_title" required />
+          <textarea placeholder="Project Description" id="proj_desc" rows="3" required></textarea>
+          <input placeholder="Required Skills (comma separated)" id="req_skills" />
+          <input placeholder="Project Capacity" id="proj_cap" type="number" min="1" required />
+          <button type="submit">Add Project</button>
+        </form>
+
+        <!-- Auto Allocate Button -->
+        <div class="auto-allocate-container">
+          <button onclick="autoAllocate()">Auto Allocate Projects</button>
+          <button onclick="logout()" style="float: right; background-color: red; color: white; border: none; padding: 8px 12px; margin-right: 20px; border-radius: 5px; cursor: pointer;">
+    Logout
+  </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Add User
+    document.getElementById('addUserForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const response = await fetch('http://localhost:5000/adduser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+          role: document.getElementById('role').value,
+          skills: document.getElementById('skills').value || null,
+          skill_rating: document.getElementById('skill_rating').value || null
+        })
+      });
+      const result = await response.json();
+      alert(result.message || JSON.stringify(result));
+      e.target.reset();
+    };
+
+    // Add Project
+    document.getElementById('addProjectForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const response = await fetch('http://localhost:5000/addproject', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          proj_title: document.getElementById('proj_title').value,
+          proj_desc: document.getElementById('proj_desc').value,
+          req_skills: document.getElementById('req_skills').value || null,
+          proj_cap: parseInt(document.getElementById('proj_cap').value),
+          status: 'Not Started'
+        })
+      });
+      const result = await response.json();
+      alert(result.message || JSON.stringify(result));
+      e.target.reset();
+    };
+
+    // Auto Allocate Projects
+    async function autoAllocate() {
+      try {
+        const response = await fetch('http://localhost:5000/autoallocate');
+        const result = await response.json();
+        alert(result.message || JSON.stringify(result));
+      } catch (err) {
+        alert("Auto Allocation failed");
+      }
+    }
+      function logout() {
+    // Clear sessionStorage
+    sessionStorage.clear();
+    // Redirect to login page
+    window.location.href = "login.html";  // Change to your actual login page
+  }
+
+  </script>
+
+</body>
+</html>
