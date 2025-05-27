@@ -29,9 +29,18 @@ This is a web application built using **Flask** and **MySQL** to automate projec
 - **Admin Dashboard**: Displays employee list, project list,Add user,Add project and real-time project allocations with status updates. Admins can also export data if needed.
 - **Employee Dashboard**: Shows the specific project assigned to the logged-in employee and lets them update its progress.
 These outputs make the system efficient for both managing and working on tasks.
-![Screenshot 2025-05-26 212644](https://github.com/user-attachments/assets/cef78aae-ecea-4b2e-b4d6-31119233e8b6)
-![image](https://github.com/user-attachments/assets/d21c8111-89ba-4a3c-8e80-89af0efa6151)
-![image](https://github.com/user-attachments/assets/ac01a30b-aea9-4e29-bb01-ad62c20cc181)
+
+**Login.html**
+
+![Screenshot 2025-05-27 102813](https://github.com/user-attachments/assets/d4842abc-e9c6-4334-8fd7-57d2fe8e9fe3)
+
+**Admin Dashboard**
+
+  ![Screenshot 2025-05-27 103002](https://github.com/user-attachments/assets/08cb6044-de53-4bd1-8af1-4d82d0ef49a7)
+  
+**Employee Dashboard**
+
+![Screenshot 2025-05-27 103432](https://github.com/user-attachments/assets/c2b82172-0c57-4fef-b51a-f26a1ffd3d21)
 
 ### 6.FUTURE RESEARCH:
 
@@ -40,10 +49,3 @@ These outputs make the system efficient for both managing and working on tasks.
 - Use data visualization tools (like Chart.js) for status graphs and progress reports
 - Role-based access using Flask-Login or JWT
 - Add project history, deadlines, and multi-employee assignments for scalability
-
-
-
-
-
-
-
