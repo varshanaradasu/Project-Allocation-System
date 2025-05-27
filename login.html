@@ -2,129 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login - Project Allocation</title>
+  <title>Login - Project Allocation System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
       box-sizing: border-box;
-    }
-    body, html {
-      height: 100%;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #444;
+      padding: 0;
     }
 
-    body {
-      background: url('https://i.pinimg.com/736x/33/9c/76/339c762c2f72885d2e5ab7c6be772ec9.jpg') no-repeat center center fixed;
-      background-size: cover;
-      position: relative;
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #333;
     }
 
-    body::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.55); /* dark overlay for readability */
-      z-index: 0;
-    }
-
-    /* Container */
-    .login-container {
-      position: relative;
-      background:lavender; 
-      padding: 40px 35px;
+    .login-wrapper {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      padding: 40px 30px;
       border-radius: 12px;
-      width: 360px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .company-header {
       text-align: center;
-      z-index: 1;
-      transition: box-shadow 0.3s ease;
-    }
-    .login-container:hover {
-      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      margin-bottom: 30px;
     }
 
-    /* Heading */
-    h1 {
-      margin-bottom: 25px;
-      font-weight: 700;
-      color: #222;
-      letter-spacing: 1.3px;
+    .company-header h1 {
+      font-size: 24px;
+      color: #003973;
     }
 
-    /* Labels */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: 600;
       font-size: 14px;
-      color: #555;
-      text-align: left;
     }
 
-    /* Inputs & Select */
     input[type="email"],
     input[type="password"],
     select {
       width: 100%;
       padding: 12px 14px;
-      margin-bottom: 20px;
-      border: 1.8px solid #ddd;
+      border: 1.5px solid #ccc;
       border-radius: 8px;
       font-size: 15px;
-      transition: border-color 0.3s ease;
       outline: none;
-    }
-    input[type="email"]:focus,
-    input[type="password"]:focus,
-    select:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+      transition: border-color 0.3s ease;
     }
 
-    /* Button */
+    input:focus,
+    select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    }
+
     button {
       width: 100%;
-      padding: 13px 0;
-      background-color: #007bff;
+      padding: 12px 0;
+      background-color: #003973;
       border: none;
       border-radius: 8px;
-      color: white;
-      font-weight: 700;
+      color: #fff;
       font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
       transition: background-color 0.3s ease;
-      box-shadow: 0 6px 14px rgba(0, 123, 255, 0.35);
     }
+
     button:hover {
-      background-color: #0056b3;
-      box-shadow: 0 8px 22px rgba(0, 86, 179, 0.45);
+      background-color: #00254d;
+    }
+
+    .footer {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+    }
+
+    @media screen and (max-width: 480px) {
+      .login-wrapper {
+        padding: 30px 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="login-container">
-    <h1>Login</h1>
+  <div class="login-wrapper">
+    <div class="company-header">
+      <h1>LOGIN PAGE</h1>
+      <p style="font-size: 14px; color: #666;"> Admin | Employee </p>
+    </div>
     <form id="loginForm">
-      <label for="email">Email ID</label>
-      <input type="email" id="email" placeholder="Enter your email" required />
-
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Enter your password" required />
-
-      <label for="role">Select Role</label>
-      <select id="role" required>
-        <option value="" disabled selected>Select role</option>
-        <option value="employee">Employee</option>
-        <option value="admin">Admin</option>
-      </select>
-
+      <div class="form-group">
+        <label for="email">Email ID</label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required />
+      </div>
+      <div class="form-group">
+        <label for="role">Select Role</label>
+        <select id="role" required>
+          <option value="" disabled selected>Select role</option>
+          <option value="employee">Employee</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
       <button type="submit">Login</button>
     </form>
+    <div class="footer">
+      &copy; 2025 Project Allocation System | All rights reserved.
+    </div>
   </div>
 
   <script>
@@ -136,6 +141,7 @@
         alert("Please select a role.");
         return;
       }
+
       const data = {
         email: document.getElementById("email").value.trim(),
         password: document.getElementById("password").value
@@ -150,19 +156,21 @@
 
         const result = await response.json();
 
-if (result.access_token) {
-  sessionStorage.setItem("access_token", result.access_token);
-  sessionStorage.setItem("email", result.email);
-  sessionStorage.setItem("user_id", result.user_id); // Store user_id
-  alert("Login successful");
+        if (result.access_token) {
+          if (result.role !== role) {
+            alert(`Role mismatch. You are registered as '${result.role}', but selected '${role}'.`);
+            return;
+          }
 
-  if (role === "employee") {
-    window.location.href = "employee.html";
-  } else {
-    window.location.href = "admin.html";
-  }
-}
- else {
+          sessionStorage.setItem("access_token", result.access_token);
+          sessionStorage.setItem("email", result.email);
+          sessionStorage.setItem("user_id", result.user_id);
+          sessionStorage.setItem("role", result.role);
+
+          alert("Login successful");
+
+          window.location.href = result.role === "employee" ? "employee.html" : "admin.html";
+        } else {
           alert("Login failed: " + (result.message || "Invalid credentials"));
         }
       } catch (error) {
