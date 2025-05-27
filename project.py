@@ -36,11 +36,9 @@ def adduser():
         return jsonify({"message": "User already exists"})
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     if role == "employee":
-        cur.execute("INSERT INTO users (name, email, password, role, skills, skill_rating) VALUES (%s, %s, %s, %s, %s, %s)",
-                    (name, email, hashed_password, role, skills, skill_rating))
+        cur.execute("INSERT INTO users (name, email, password, role, skills, skill_rating) VALUES (%s, %s, %s, %s, %s, %s)", (name, email, hashed_password, role, skills, skill_rating))
     else:
-        cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)",
-                    (name, email, hashed_password, role))
+        cur.execute("INSERT INTO users (name, email, password, role) VALUES (%s, %s, %s, %s)", (name, email, hashed_password, role))
     mysql.connection.commit()
     return jsonify({"message": f"{role.capitalize()} added successfully"})
 
@@ -51,21 +49,21 @@ def userlogin():
     password = data['password']
     if not email or not password:
         return jsonify({"error": "Missing credentials"})
-
     cur = mysql.connection.cursor()
-    cur.execute("SELECT user_id, email, password FROM users WHERE email = %s", (email,))
+    cur.execute("SELECT user_id, email, password, role FROM users WHERE email = %s", (email,))
     user = cur.fetchone()
     if not user:
         return jsonify({"message": "User not found"})
 
-    user_id, email, password_hash = user
+    user_id, email, password_hash,role = user
     if bcrypt.check_password_hash(password_hash, password):
         access_token = create_access_token(identity=str(user_id), expires_delta=timedelta(hours=1))
         return jsonify({
             "message": "Login success",
             "access_token": access_token,
             "user_id": user_id,
-            "email": email
+            "email": email,
+            "role": role
         })
     else:
         return jsonify({"message": "Login failed"})
